@@ -28,7 +28,6 @@
 
         <div class="alert alert-success mb-3" role="alert">
             <p>obj:sgn</p>
-            <p>本体と差分のURLはLR2IR上に記載</p>
             <p>急に難易度が変わったりすることがありますがご了承ください</p>
             <hr>
             <p class="mb-0">sg0 = st0</p>
@@ -56,13 +55,13 @@
                 var obj = $("#table_int");
 
                 obj.html("");
-                $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>本体</th><th>差分</th><th>Comment</th></tr></thead><tbody>")
+                $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead><tbody>")
                     .appendTo(obj);
                 var obj_sep = null;
                 for (var i = 0; i < info.length; i++) {
                     if (x != info[i].level) {
                         if (obj_sep != null) {
-                            obj_sep.html("<td colspan='4'>" + "<b>" + mark + x + " (" + count +
+                            obj_sep.html("<td colspan='7'>" + "<b>" + mark + x + " (" + count +
                                 "譜面)</b></td>");
                         }
                         obj_sep = $("<tr class='table-dark' style='text-align:center' id='" + mark + info[i].level +
@@ -88,12 +87,12 @@
                     
                     // 本体DL
                     $("<td width='5%'>" +
-                        "<a href='" + info[i].url + "' target='_blank'>" + "本体" + "</a></td>").appendTo(str);
+                        "<a href='" + info[i].url + "' target='_blank'>" + "DL(Song)" + "</a></td>").appendTo(str);
 
                     // 差分DL
                     $("<td width='5%'>" +
                     (info[i].url_diff && info[i].url_diff.trim() !== ""
-                    ? "<a href='" + info[i].url_diff + "' target='_blank'>差分</a>"
+                    ? "<a href='" + info[i].url_diff + "' target='_blank'>DL(Chart)</a>"
                     : "") +
                     "</td>"
                     ).appendTo(str);
