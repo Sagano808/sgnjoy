@@ -87,12 +87,12 @@
                     
                     // 本体DL
                     $("<td width='5%'>" +
-                        "<a href='" + info[i].url + "' target='_blank'>" + "DL(Song)" + "</a></td>").appendTo(str);
+                        "<a href='" + info[i].url + "' target='_blank'>" + "DL" + "</a></td>").appendTo(str);
 
                     // 差分DL
                     $("<td width='5%'>" +
                     (info[i].url_diff && info[i].url_diff.trim() !== ""
-                    ? "<a href='" + info[i].url_diff + "' target='_blank'>DL(Chart)</a>"
+                    ? "<a href='" + info[i].url_diff + "' target='_blank'>DL</a>"
                     : "") +
                     "</td>"
                     ).appendTo(str);
