@@ -8,94 +8,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="bmstable" content="header.json" />
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous">
-    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-    body {
-        background-color: #121212;
-        color: #e0e0e0;
-    }
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
 
-    .navbar {
-        background-color: #1f1f1f !important;
-    }
+        .navbar {
+            background-color: #1f1f1f !important;
+        }
 
-    .alert-success {
-        background-color: #0d2b78;
-        color: #ffffff;
-        border-color: #ffffff;
-    }
+        .alert-success {
+            background-color: #0d2b78;
+            color: #ffffff;
+            border-color: #2f6fad;
+        }
 
-    .table {
-        color: #e0e0e0;
-    }
+        .table-dark {
+            background-color: #181818 !important;
+            color: #e0e0e0;
+        }
 
-    .table-light {
-        background-color: #1a1a1a !important;
-    }
+        .table-dark thead {
+            background-color: #222 !important;
+        }
 
-    .table-striped > tbody > tr:nth-of-type(odd) {
-        background-color: #1f1f1f;
-    }
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: #1d1d1d;
+        }
 
-    .table-hover tbody tr:hover {
-        background-color: #2a2a2a;
-    }
+        .table-hover tbody tr:hover {
+            background-color: #262f3a;
+        }
 
-    .table-dark {
-        background-color: #2c2c2c !important;
-    }
+        .table-dark td,
+        .table-dark th {
+            border-color: #2a2a2a;
+        }
 
-    a {
-        color: #66b3ff;
-    }
+        /* レベル区切り専用 */
+        .level-sep {
+            background-color: #1f1f1f !important;
+            border-top: 2px solid #2f6fad;
+            text-align: center;
+            font-weight: bold;
+        }
 
-    a:hover {
-        color: #99ccff;
-    }
-</style>
-<style>
-    /* テーブル全体 */
-    .table-dark {
-        background-color: #181818 !important;
-        color: #e0e0e0;
-    }
+        a {
+            color: #66b3ff;
+        }
 
-    /* ヘッダー行 */
-    .table-dark thead {
-        background-color: #222 !important;
-    }
-
-    /* レベル区切り行 */
-    .table-dark tr.table-dark {
-        background-color: #1f1f1f !important;
-        border-top: 2px solid #2f6fad;
-    }
-
-    /* ストライプ */
-    .table-striped > tbody > tr:nth-of-type(odd) {
-        background-color: #1d1d1d;
-    }
-
-    /* ホバー */
-    .table-hover tbody tr:hover {
-        background-color: #262f3a;
-    }
-
-    /* セル境界線をやや控えめに */
-    .table-dark td, 
-    .table-dark th {
-        border-color: #2a2a2a;
-    }
-</style>
+        a:hover {
+            color: #9fd0ff;
+        }
+    </style>
 </head>
 
 <body>
     <header class="mb-3">
-        <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar navbar-dark">
             <div class="container-fluid">
                 <span class="navbar-brand mb-0 h1">sgnjoy</span>
             </div>
@@ -113,14 +87,12 @@
             <p class="mb-0">sg0 = st0 ／ sg-1 = sl12</p>
         </div>
 
-        
-
-        <!--ここから難易度表本体-->
         <div>
             <table class="table table-dark table-striped table-hover table-sm" id="table_int">
             </table>
         </div>
-        <script language="javascript" type="text/javascript">
+
+        <script>
             $(document).ready(function () {
                 $.getJSON($("meta[name=bmstable]").attr("content"), function (header) {
                     $.getJSON(header.data_url, function (information) {
@@ -131,76 +103,66 @@
 
             function makeBMSTable(info, mark) {
                 var x = "";
-                var ev = "";
                 var count = 0;
                 var obj = $("#table_int");
 
                 obj.html("");
-                $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>BPM</th><th>Notes</th><th>Total</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead><tbody>")
-                    .appendTo(obj);
+
+                var thead = $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>BPM</th><th>Notes</th><th>Total</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead>");
+                var tbody = $("<tbody></tbody>");
+
+                thead.appendTo(obj);
+                tbody.appendTo(obj);
+
                 var obj_sep = null;
+
                 for (var i = 0; i < info.length; i++) {
+
                     if (x != info[i].level) {
                         if (obj_sep != null) {
-                            obj_sep.html("<td colspan='12'>" + "<b>" + mark + x + " (" + count +
-                                "譜面)</b></td>");
+                            obj_sep.html("<td colspan='9'><b>" + mark + x + " (" + count + "譜面)</b></td>");
                         }
-                        obj_sep = $("<tr class='table-dark' style='text-align:center' id='" + mark + info[i].level +
-                            "'></tr>");
-                        obj_sep.appendTo(obj);
+
+                        obj_sep = $("<tr class='level-sep'></tr>");
+                        obj_sep.appendTo(tbody);
+
                         count = 0;
                         x = info[i].level;
                     }
 
                     var str = $("<tr></tr>");
 
-                    // Level
                     $("<td width='5%'>" + mark + x + "</td>").appendTo(str);
 
-                    // Title
-                    $("<td width='30%'>" +
-                        "<a href='http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=" + info[
-                            i]
-                        .md5 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
+                    $("<td width='30%'><a href='http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=" +
+                        info[i].md5 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
 
-                    // Artist
                     $("<td width='13%'>" + info[i].artist + "</td>").appendTo(str);
-
-                    // BPM
                     $("<td width='7%'>" + info[i].bpm + "</td>").appendTo(str);
-
-                    // Notes
                     $("<td width='5%'>" + info[i].notes + "</td>").appendTo(str);
-
-                    // TOTAL
                     $("<td width='5%'>" + info[i].total + "</td>").appendTo(str);
-                    
-                    // 本体DL
-                    $("<td width='5%'>" +
-                        "<a href='" + info[i].url + "' target='_blank'>" + "DL" + "</a></td>").appendTo(str);
 
-                    // 差分DL
-                    $("<td width='5%'>" +
-                    (info[i].url_diff && info[i].url_diff.trim() !== ""
-                    ? "<a href='" + info[i].url_diff + "' target='_blank'>DL</a>"
-                    : "") +
-                    "</td>"
-                    ).appendTo(str);
+                    $("<td width='5%'><a href='" + info[i].url + "' target='_blank'>DL</a></td>").appendTo(str);
 
-                    // Comment
+                    $("<td width='5%'>" +
+                        (info[i].url_diff && info[i].url_diff.trim() !== ""
+                            ? "<a href='" + info[i].url_diff + "' target='_blank'>DL</a>"
+                            : "") +
+                        "</td>").appendTo(str);
+
                     $("<td width='25%'>" + info[i].comment + "</td>").appendTo(str);
-                    str.appendTo(obj);
-                    count++;
 
+                    str.appendTo(tbody);
+                    count++;
                 }
-                $("</tbody>").appendTo(obj);
 
                 if (obj_sep != null) {
-                    obj_sep.html("<td class='table-dark' style='text-align:center' colspan='12'>" + "<b>" + mark + x +
-                        " (" + count + "譜面)</b></td>");
+                    obj_sep.html("<td colspan='9'><b>" + mark + x + " (" + count + "譜面)</b></td>");
                 }
             }
         </script>
     </div>
+
+</body>
 
 </html>
