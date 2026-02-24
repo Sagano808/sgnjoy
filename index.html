@@ -64,6 +64,10 @@
         a:hover {
             color: #9fd0ff;
         }
+        .comment-tag {
+    color: #ff3b3b;
+    font-weight: bold;
+}
     </style>
 </head>
 
@@ -150,11 +154,22 @@
                             : "") +
                         "</td>").appendTo(str);
 
-                    $("<td width='25%'>" + info[i].comment + "</td>").appendTo(str);
+                    var diff = info[i].table;
+                    var commentText = info[i].comment || "";
 
-                    str.appendTo(tbody);
-                    count++;
-                }
+                    var finalComment = "";
+
+                    if (diff && diff.trim() !== "") {
+                        finalComment += "[<span class='comment-tag'>" + diff + "</span>] ";
+                    }
+
+                    finalComment += commentText;
+
+                    $("<td width='25%'>" + finalComment + "</td>").appendTo(str);
+
+                        str.appendTo(tbody);
+                        count++;
+                    }
 
                 if (obj_sep != null) {
                     obj_sep.html("<td colspan='9'><b>" + mark + x + " (" + count + "譜面)</b></td>");
