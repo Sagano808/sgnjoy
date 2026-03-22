@@ -68,6 +68,11 @@
     color: #ff3b3b;
     font-weight: bold;
 }
+        .rec-star {
+    color: #FFD700;
+    font-weight: bold;
+    margin-left: 4px;
+}
     </style>
 </head>
 
@@ -138,8 +143,15 @@
 
                     $("<td width='5%'>" + mark + x + "</td>").appendTo(str);
 
+                    var rec = info[i].recommend;
+                    var star = "";
+
+                    if (rec && rec.trim() !== "") {
+                        star = " <span class='rec-star'>★</span>";
+                    }
+                    
                     $("<td width='30%'><a href='http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=" +
-                        info[i].md5 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
+                    info[i].md5 + "' target='_blank'>" + info[i].title + "</a>" + star + "</td>").appendTo(str);
 
                     $("<td width='13%'>" + info[i].artist + "</td>").appendTo(str);
                     $("<td width='7%'>" + info[i].bpm + "</td>").appendTo(str);
