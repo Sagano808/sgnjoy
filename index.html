@@ -72,6 +72,15 @@
     font-weight: bold;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
 }
+        .tn-low {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.tn-high {
+    color: #66ccff;
+    font-weight: bold;
+}
     </style>
 </head>
 
@@ -170,8 +179,25 @@
                         if (total != null && notes != null && notes != 0) {
                             tn = (total / notes).toFixed(3);
                         }
+                        var total = info[i].total;
+                        var notes = info[i].notes;
 
-                    $("<td width='5%'>" + tn + "</td>").appendTo(str);
+                        var tn = "";
+                        var tnValue = null;
+                        var tnClass = "";
+
+                        if (total != null && notes != null && notes != 0) {
+                        tnValue = total / notes;
+                        tn = tnValue.toFixed(3);
+
+                        if (tnValue <= 0.175) {
+                                tnClass = "tn-low";
+                            } else if (tnValue >= 0.220) {
+                                tnClass = "tn-high";
+                            }
+                        }
+
+                    $("<td width='5%' class='" + tnClass + "'>" + tn + "</td>").appendTo(str);
 
                     $("<td width='5%'><a href='" + info[i].url + "' target='_blank'>DL</a></td>").appendTo(str);
 
