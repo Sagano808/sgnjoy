@@ -89,7 +89,6 @@
         <div class="alert alert-success mb-3" role="alert">
             <p>obj:sgn名義で作った差分をまとめた難易度表です</p>
             <p>急に難易度が変わったりすることがありますがご了承ください</p>
-            <p>一応イージー難易度順に上から並べています</p>
             <p>レベル設定はかなりガバガバなので注意</p>
             <hr>
             <p class="mb-0">sg0 = st0 ／ sg-1 = sl12　　タイトルが太字の差分は個人的におすすめの差分です</p>
@@ -116,7 +115,7 @@
 
                 obj.html("");
 
-                var thead = $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>BPM</th><th>Notes</th><th>Total</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead>");
+                var thead = $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>BPM</th><th>Notes</th><th>T/N</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead>");
                 var tbody = $("<tbody></tbody>");
 
                 thead.appendTo(obj);
@@ -155,7 +154,16 @@
                     $("<td width='13%'>" + info[i].artist + "</td>").appendTo(str);
                     $("<td width='7%'>" + info[i].bpm + "</td>").appendTo(str);
                     $("<td width='5%'>" + info[i].notes + "</td>").appendTo(str);
-                    $("<td width='5%'>" + info[i].total + "</td>").appendTo(str);
+                        var total = info[i].total;
+                        var notes = info[i].notes;
+
+                        var tn = "";
+
+                        if (total != null && notes != null && notes != 0) {
+                            tn = (total / notes).toFixed(3);
+                        }
+
+                    $("<td width='5%'>" + tn + "</td>").appendTo(str);
 
                     $("<td width='5%'><a href='" + info[i].url + "' target='_blank'>DL</a></td>").appendTo(str);
 
