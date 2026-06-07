@@ -157,8 +157,7 @@ function getTitleLink(song) {
     if (mode === "bmsir") {
         if (song.md5) {
             return "https://bms-ir.org/new/song?songmd5=" +
-                song.md5 +
-                "&view=new";
+                song.md5;
         }
 
         return "https://bms-ir.org/";
