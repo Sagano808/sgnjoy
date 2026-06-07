@@ -81,6 +81,12 @@
     color: #66ccff;
     font-weight: bold;
 }
+
+        .link-selected {
+    font-weight: bold;
+    color: #ffffff !important;
+    text-decoration: none;
+}
     </style>
 </head>
 
@@ -103,6 +109,13 @@
             <p class="mb-0">sg0 = st0 ／ sg-1 = sl12　　タイトルが太字の差分は個人的におすすめの差分です</p>
         </div>
 
+        <div class="mb-3">
+    <b>リンク先：</b>
+    <a href="#" id="mode-mocha">Mocha</a>
+    /
+    <a href="#" id="mode-bmsir">BMS-IR</a>
+</div>
+
         <div>
             <table class="table table-dark table-striped table-hover table-sm" id="table_int">
             </table>
@@ -110,6 +123,19 @@
 
         <script>
             $(document).ready(function () {
+                $(document).on("click", "#mode-mocha", function(e) {
+    e.preventDefault();
+    localStorage.setItem("linkMode", "mocha");
+    updateLinkModeUI();
+});
+
+$(document).on("click", "#mode-bmsir", function(e) {
+    e.preventDefault();
+    localStorage.setItem("linkMode", "bmsir");
+    updateLinkModeUI();
+});
+
+updateLinkModeUI();
                 $.getJSON($("meta[name=bmstable]").attr("content"), function (header) {
                 $.getJSON(header.data_url, function (information) {
 
@@ -125,6 +151,30 @@
                 });
             });
 
+function getTitleLink(song) {
+    const mode = localStorage.getItem("linkMode") || "mocha";
+
+    if (mode === "bmsir") {
+        if (song.md5) {
+            return "https://bms-ir.org/new/song?songmd5=" +
+                song.md5 +
+                "&view=new";
+        }
+
+        return "https://bms-ir.org/";
+    }
+
+    return "https://mocha-repository.info/song.php?sha256=" +
+        song.sha256;
+}
+
+function updateLinkModeUI() {
+    const mode = localStorage.getItem("linkMode") || "mocha";
+
+    $("#mode-mocha").toggleClass("link-selected", mode === "mocha");
+    $("#mode-bmsir").toggleClass("link-selected", mode === "bmsir");
+}
+            
             function makeBMSTable(info, mark) {
                 var x = "";
                 var count = 0;
@@ -165,8 +215,11 @@
                         recClass = "rec-title";
                     }
 
-                    $("<td width='30%'><a class='" + recClass + "' href='https://mocha-repository.info/song.php?sha256=" +
-                    info[i].sha256 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
+                    $("<td width='30%'><a class='" + recClass + "' href='" +
+getTitleLink(info[i]) +
+"' target='_blank'>" +
+info[i].title +
+"</a></td>").appendTo(str);
 
                     $("<td width='20%'>" + info[i].artist + "</td>").appendTo(str);
                     $("<td width='7%'>" + info[i].bpm + "</td>").appendTo(str);
