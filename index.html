@@ -176,111 +176,148 @@ function updateLinkModeUI() {
 }
             
             function makeBMSTable(info, mark) {
-                var x = "";
-                var count = 0;
-                var obj = $("#table_int");
+    const obj = $("#table_int");
 
-                obj.html("");
+    let html = `
+        <thead class="table-dark">
+            <tr>
+                <th>Level</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>BPM</th>
+                <th>Notes</th>
+                <th>T/N</th>
+                <th>Song</th>
+                <th>Chart</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
 
-                var thead = $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>BPM</th><th>Notes</th><th>T/N</th><th>Song</th><th>Chart</th><th>Comment</th></tr></thead>");
-                var tbody = $("<tbody></tbody>");
+    let currentLevel = null;
+    let levelStartIndex = 0;
 
-                thead.appendTo(obj);
-                tbody.appendTo(obj);
+    for (let i = 0; i < info.length; i++) {
 
-                var obj_sep = null;
+        if (currentLevel !== info[i].level) {
 
-                for (var i = 0; i < info.length; i++) {
-
-                    if (x != info[i].level) {
-                        if (obj_sep != null) {
-                            obj_sep.html("<td colspan='9'><b>" + mark + x + " (" + count + "譜面)</b></td>");
-                        }
-
-                        obj_sep = $("<tr class='level-sep'></tr>");
-                        obj_sep.appendTo(tbody);
-
-                        count = 0;
-                        x = info[i].level;
-                    }
-
-                    var str = $("<tr></tr>");
-
-                    $("<td width='5%'>" + mark + x + "</td>").appendTo(str);
-                    
-                    var rec = info[i].recommend;
-                    var recClass = "";
-
-                    if (rec && rec.trim() !== "") {
-                        recClass = "rec-title";
-                    }
-
-                    $("<td width='30%'><a class='" + recClass + "' href='" +
-getTitleLink(info[i]) +
-"' target='_blank'>" +
-info[i].title +
-"</a></td>").appendTo(str);
-
-                    $("<td width='20%'>" + info[i].artist + "</td>").appendTo(str);
-                    $("<td width='7%'>" + info[i].bpm + "</td>").appendTo(str);
-                    $("<td width='5%'>" + info[i].notes + "</td>").appendTo(str);
-                        var total = info[i].total;
-                        var notes = info[i].notes;
-
-                        var tn = "";
-
-                        if (total != null && notes != null && notes != 0) {
-                            tn = (total / notes).toFixed(3);
-                        }
-                        var total = info[i].total;
-                        var notes = info[i].notes;
-
-                        var tn = "";
-                        var tnValue = null;
-                        var tnClass = "";
-
-                        if (total != null && notes != null && notes != 0) {
-                        tnValue = total / notes;
-                        tn = tnValue.toFixed(3);
-
-                        if (tnValue <= 0.175) {
-                                tnClass = "tn-low";
-                            } else if (tnValue >= 0.220) {
-                                tnClass = "tn-high";
-                            }
-                        }
-
-                    $("<td width='5%' class='" + tnClass + "'>" + tn + "</td>").appendTo(str);
-
-                    $("<td width='5%'><a href='" + info[i].url + "' target='_blank'>DL</a></td>").appendTo(str);
-
-                    $("<td width='5%'>" +
-                        (info[i].url_diff && info[i].url_diff.trim() !== ""
-                            ? "<a href='" + info[i].url_diff + "' target='_blank'>DL</a>"
-                            : "") +
-                        "</td>").appendTo(str);
-
-                    var diff = info[i].table;
-                    var commentText = info[i].comment || "";
-
-                    var finalComment = "";
-
-                    if (diff && diff.trim() !== "") {
-                        finalComment += "[<span class='comment-tag'>" + diff + "</span>] ";
-                    }
-
-                    finalComment += commentText;
-
-                    $("<td width='18%'>" + finalComment + "</td>").appendTo(str);
-
-                        str.appendTo(tbody);
-                        count++;
-                    }
-
-                if (obj_sep != null) {
-                    obj_sep.html("<td colspan='9'><b>" + mark + x + " (" + count + "譜面)</b></td>");
-                }
+            if (currentLevel !== null) {
+                html += `
+                    <tr class="level-sep">
+                        <td colspan="9">
+                            <b>${mark}${currentLevel} (${i - levelStartIndex}譜面)</b>
+                        </td>
+                    </tr>
+                `;
             }
+
+            levelStartIndex = i;
+            currentLevel = info[i].level;
+
+            html += `<tr data-level-start="${currentLevel}"></tr>`;
+        }
+
+        const recClass =
+            info[i].recommend && info[i].recommend.trim() !== ""
+                ? "rec-title"
+                : "";
+
+        let tn = "";
+        let tnClass = "";
+
+        if (
+            info[i].total != null &&
+            info[i].notes != null &&
+            info[i].notes !== 0
+        ) {
+            const tnValue = info[i].total / info[i].notes;
+            tn = tnValue.toFixed(3);
+
+            if (tnValue <= 0.175) {
+                tnClass = "tn-low";
+            } else if (tnValue >= 0.220) {
+                tnClass = "tn-high";
+            }
+        }
+
+        const diff = info[i].table || "";
+        const comment = info[i].comment || "";
+
+        const finalComment =
+            (diff.trim()
+                ? `[<span class="comment-tag">${diff}</span>] `
+                : "") + comment;
+
+        html += `
+            <tr>
+                <td width="5%">${mark}${info[i].level}</td>
+
+                <td width="30%">
+                    <a class="${recClass}"
+                       href="${getTitleLink(info[i])}"
+                       target="_blank">
+                        ${info[i].title}
+                    </a>
+                </td>
+
+                <td width="20%">${info[i].artist}</td>
+                <td width="7%">${info[i].bpm}</td>
+                <td width="5%">${info[i].notes}</td>
+
+                <td width="5%" class="${tnClass}">
+                    ${tn}
+                </td>
+
+                <td width="5%">
+                    <a href="${info[i].url}" target="_blank">DL</a>
+                </td>
+
+                <td width="5%">
+                    ${
+                        info[i].url_diff &&
+                        info[i].url_diff.trim() !== ""
+                            ? `<a href="${info[i].url_diff}" target="_blank">DL</a>`
+                            : ""
+                    }
+                </td>
+
+                <td width="18%">
+                    ${finalComment}
+                </td>
+            </tr>
+        `;
+    }
+
+    if (currentLevel !== null) {
+        html += `
+            <tr class="level-sep">
+                <td colspan="9">
+                    <b>${mark}${currentLevel} (${info.length - levelStartIndex}譜面)</b>
+                </td>
+            </tr>
+        `;
+    }
+
+    html += "</tbody>";
+
+    obj.html(html);
+
+    $(".level-sep").each(function () {
+        const prev = $(this).prevAll("tr:not(.level-sep)").first();
+
+        if (prev.length) {
+            const level = prev.find("td:first").text().replace(mark, "");
+            const count = prev
+                .nextUntil(".level-sep")
+                .length + 1;
+
+            $(this).html(
+                `<td colspan="9"><b>${mark}${level} (${count}譜面)</b></td>`
+            );
+        }
+    });
+}
         </script>
     </div>
 
