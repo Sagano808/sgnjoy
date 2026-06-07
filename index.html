@@ -126,13 +126,13 @@
                 $(document).on("click", "#mode-mocha", function(e) {
     e.preventDefault();
     localStorage.setItem("linkMode", "mocha");
-    updateLinkModeUI();
+    location.reload();
 });
 
 $(document).on("click", "#mode-bmsir", function(e) {
     e.preventDefault();
     localStorage.setItem("linkMode", "bmsir");
-    updateLinkModeUI();
+    location.reload();
 });
 
 updateLinkModeUI();
